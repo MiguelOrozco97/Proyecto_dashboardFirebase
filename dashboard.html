@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-database.js"></script>
+</head>
+
+<body>
+    <input type="Integer" id="valor_sensor">
+    <button id="send">Send</button>
+
+    <div id="currentValue"></div>
+
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyBS7yfqvIwXZEcOnVz7KHh9aCgdPakNw4I",
+            authDomain: "proyectodashboard-3c564.firebaseapp.com",
+            databaseURL: "https://proyectodashboard-3c564-default-rtdb.firebaseio.com",
+            projectId: "proyectodashboard-3c564",
+            storageBucket: "proyectodashboard-3c564.appspot.com",
+            messagingSenderId: "704446315555",
+            appId: "1:704446315555:web:5ec80557f366f5a54d0596",
+            measurementId: "G-J34320XCBH"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        var firebaseRef = firebase.database().ref('valorSensor');
+
+        var currentValueElement = document.getElementById('currentValue');
+
+        document.querySelector('#send').addEventListener('click', () => {
+            var emailValue = document.getElementById('valor_sensor').value;
+
+            var historialRef = firebase.database().ref('valorSensor/historial');
+
+            var fechaActual = new Date().toLocaleString();
+
+            historialRef.push({
+                fecha: fechaActual,
+                value: emailValue
+            });
+
+            firebase.database().ref('valorSensor/valorActual').set(emailValue);
+        });
+
+        firebase.database().ref('valorSensor/valorActual').on('value', (snapshot) => {
+            var currentValue = snapshot.val();
+            currentValueElement.textContent = 'Valor actual: ' + currentValue;
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-database.js"></script>
+</head>
+
+<body>
+    <input type="Integer" id="valor_sensor">
+    <button id="send">Send</button>
+
+    <div id="currentValue"></div>
+
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyDpfyAU8IEgiTqX9O_By87Ix-CUiOOxSes",
+            authDomain: "paginaweb-dashboard.firebaseapp.com",
+            databaseURL: "https://paginaweb-dashboard-default-rtdb.firebaseio.com",
+            projectId: "paginaweb-dashboard",
+            storageBucket: "paginaweb-dashboard.appspot.com",
+            messagingSenderId: "520577906356",
+            appId: "1:520577906356:web:a4c61e08c50b20c58349e1",
+            measurementId: "G-C8M3505QGC"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        var firebaseRef = firebase.database().ref('valorSensor');
+
+        var currentValueElement = document.getElementById('currentValue');
+
+        document.querySelector('#send').addEventListener('click', () => {
+            var emailValue = document.getElementById('valor_sensor').value;
+
+            var historialRef = firebase.database().ref('valorSensor/historial');
+
+            var fechaActual = new Date().toLocaleString();
+
+            historialRef.push({
+                fecha: fechaActual,
+                value: emailValue
+            });
+
+            firebase.database().ref('valorSensor/valorActual').set(emailValue);
+        });
+
+        firebase.database().ref('valorSensor/valorActual').on('value', (snapshot) => {
+            var currentValue = snapshot.val();
+            currentValueElement.textContent = 'Valor actual: ' + currentValue;
+        });
+    </script>
+</body>
+
+</html>
